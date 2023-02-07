@@ -1,7 +1,7 @@
 def validaNome():
-    nome = input('Nome: ')  # Apenas o primeiro nome
+    nome = input('Nome: ').title()  # Apenas o primeiro nome
     while nome.isalpha() == False:  # alphanumeric function
-        nome = input('Nome: ')
+        nome = input('Nome: ').title()
     else:
         return nome
 
@@ -16,7 +16,7 @@ def validaCpf():
 
 def validaNrPessoas():
     nrPessoas = input('Número de pessoas: ')
-    while nrPessoas.isdigit() == False or int(nrPessoas) > 5:  # Máx 5
+    while nrPessoas.isdigit() == False:
         nrPessoas = input('Número de pessoas: ')
     else:
         return int(nrPessoas)
@@ -50,7 +50,7 @@ def validaTipoQuarto():
 
 def validaDiarias():
     diarias = input('Diárias: ')
-    while diarias.isdigit() == False or int(diarias) > 15:  # Máx 15
+    while diarias.isdigit() == False:
         diarias = input('Diárias: ')
     else:
         return int(diarias)
