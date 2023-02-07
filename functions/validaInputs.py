@@ -74,11 +74,3 @@ def validaInts():
         num = input('ID: ')
     else:
         return int(num)
-
-
-if __name__ == '__main__':
-    validaInts()
-    # a = validaNrPessoas()
-    # b = validaTipoQuarto()
-    # c = validaDiarias()
-    # print(validaValorReserva(a, b, c))
