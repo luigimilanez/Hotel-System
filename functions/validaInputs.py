@@ -1,5 +1,5 @@
 def validaNome():
-    nome = input('Nome: ').title()  # Apenas o primeiro nome
+    nome = input('Nome: ').title()  # Digite apenas o primeiro nome do titular
     while nome.isalpha() == False:  # alphanumeric function
         nome = input('Nome: ').title()
     else:
