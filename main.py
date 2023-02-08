@@ -27,8 +27,8 @@ def entradaSaida(antigoStatus, novoStatus, cpfTitular):
             cnx.close()
 
     else:
-        cnx  # Força reconexão ao banco de dados
-
+        cnx  # Força reconexão com o banco
+        
 
 def consultaCPF(cpf, statusReserva):
     consulta = cnx.cursor()  # Abre a consulta
@@ -56,9 +56,9 @@ def encerrar():
     cnx.close()  # Fecha conexão com o banco de dados
     exit()  # Encerra o programa
     
-
+    
+sys('cls')  # Limpa o terminal
 while True:
-    sys('cls')  # Limpa o terminal
     cnx = conexao('cnx')  # Abre a conexão com o banco de dados
     checarConexao = cnx.is_connected()  # True se conectado
 
@@ -68,7 +68,7 @@ while True:
         '3 - Saída do Cliente (Check Out)\n'
         '4 - Modificar Reservas\n'
         '5 - Relatórios\n'
-        '6 - Sair'
+        '6 - Sair\n'
     )
 
     resposta = input('> ')
