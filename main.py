@@ -5,9 +5,56 @@ from functions.sqlConnection import conexao
 from functions.validaInputs import *
 
 
+def entradaSaida(antigoStatus, novoStatus, cpfTitular):
+    if checarConexao == True:
+        consulta = cnx.cursor()  # Abre a consulta
+        
+        idDisponiveis = consultaCPF(cpfTitular, antigoStatus)
+        if idDisponiveis == None:
+            pass  # Mensagem de erro já é dada na função acima
+        else:
+            listaIds = idDisponiveis
+            id = validaInts()
+            if id not in listaIds:
+                print('Número de reserva inválido')
+            else:
+                request = f"UPDATE Reservas SET status_reserva = '{novoStatus}' WHERE id_reserva = {id};"
+                consulta.execute(request)
+                cnx.commit()  # Atualiza as informações no banco
+                print('Status atualizado')
+
+            consulta.close()
+            cnx.close()
+
+    else:
+        cnx  # Força reconexão ao banco de dados
+
+
+def consultaCPF(cpf, statusReserva):
+    consulta = cnx.cursor()  # Abre a consulta
+    request = f"SELECT * FROM Reservas WHERE status_reserva = '{statusReserva}' and cpf_titular = '{cpf}';"
+    consulta.execute(request)
+
+    respostaConsulta = consulta.fetchall()  # Coloca todas as linhas da consulta em uma lista
+    if not respostaConsulta:
+        print('Nenhuma reserva cadastrada em seu CPF')
+        return None
+    else:
+        tamLista = len(respostaConsulta)  # Quantidade de linhas provenientes da consulta
+        listaIds = []  # Lista vazia
+        for dados in respostaConsulta:
+            print(dados)
+            tamLista = int(tamLista) - 1
+            ids = respostaConsulta[tamLista][0]
+            listaIds.append(ids)  # Insere os IDs disponíveis para posterior validação
+        
+        consulta.close()  # Fecha a consulta
+        return listaIds
+
+
 def encerrar():
     cnx.close()  # Fecha conexão com o banco de dados
-    exit()
+    exit()  # Encerra o programa
     
 
 while True:
@@ -30,10 +77,12 @@ while True:
         pass
 
     elif resposta == '2':
-        pass
+        cpf = validaCpf()
+        entradaSaida('Reservado', 'Ativo', cpf)
 
     elif resposta == '3':
-        pass 
+        cpf = validaCpf()
+        entradaSaida('Ativo', 'Finalizado', cpf)
 
     elif resposta == '4':
         pass
