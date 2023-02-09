@@ -52,6 +52,57 @@ def consultaCPF(cpf, statusReserva):
         return listaIds
 
 
+def relatorio(statusReserva):
+    def consultaDados():
+        filtro = []
+        for dados in consulta:
+            filtro.append(dados)
+            print(dados)
+        if not filtro:
+            return print(f'Não há reservas com o status "{statusReserva}"')
+
+    if checarConexao == True:
+        consulta = cnx.cursor()  # Abre a consulta
+        statusBanco = ['Reservado', 'Ativo', 'Finalizado']
+
+        if statusReserva == 'CPF':
+            cpf = validaCpf()
+
+            print('1 - Reservado\n'
+            '2 - Ativo\n'
+            '3 - Finalizado\n'
+            '4 - Menu\n')
+
+            option = input('Opção ')
+
+            if option == '1':
+                consultaCPF(cpf, 'Reservado')
+            elif option == '2':
+                consultaCPF(cpf, 'Ativo')
+            elif option == '3':
+                consultaCPF(cpf, 'Finalizado')
+            elif option == '4':
+                pass  # Volta para o menu
+            else:
+                pass  # Volta para o menu
+
+        elif statusReserva in statusBanco:
+            request = f"SELECT * FROM Reservas WHERE status_reserva = '{statusReserva}';"
+            consulta.execute(request)
+            consultaDados()
+
+        else:
+            request = f"SELECT * FROM Reservas;"
+            consulta.execute(request)
+            consultaDados()
+
+        consulta.close()
+        cnx.close()
+
+    else:
+        cnx  # Força reconexão com o banco de dados
+
+
 def encerrar():
     cnx.close()  # Fecha conexão com o banco de dados
     exit()  # Encerra o programa
@@ -62,7 +113,7 @@ while True:
     cnx = conexao('cnx')  # Abre a conexão com o banco de dados
     checarConexao = cnx.is_connected()  # True se conectado
 
-    print(
+    print('\n'
         '1 - Cadastrar Reserva\n'
         '2 - Entrada do Cliente (Check In)\n'
         '3 - Saída do Cliente (Check Out)\n'
@@ -94,31 +145,27 @@ while True:
         '3 - Reservados\n'
         '4 - Ativos\n'
         '5 - Finalizados\n'
-        '6 - Cancelados\n'
-        '7 - Voltar'
+        '6 - Voltar\n'
         )
 
         option = input('Opção ')
 
         if option == '1':
-            pass  # Busca por cpf
+            relatorio('CPF')  # Busca por cpf
 
         elif option == '2':
-            pass  # Busca por todos os registros do banco
+            relatorio('Todos')  # Busca por todos os registros do banco
 
         elif option == '3':
-            pass  # Busca pelo status Reservado
+            relatorio('Reservado')  # Busca pelo status Reservado
 
         elif option == '4':
-            pass  # Busca pelo status Ativo
+            relatorio('Ativo')  # Busca pelo status Ativo
 
         elif option == '5':
-            pass  # Busca pelo status Finalizado
+            relatorio('Finalizado')  # Busca pelo status Finalizado
 
         elif option == '6':
-            pass  # Busca pelo status Cancelado
-
-        elif option == '7':
             pass  # Loop - Volta para o menu principal
 
 
