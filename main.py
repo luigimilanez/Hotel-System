@@ -5,6 +5,55 @@ from functions.sqlConnection import conexao
 from functions.validaInputs import *
 
 
+def inserirAlterar(escolha):  # Cadastrar / Alterar
+    if checarConexao == True:
+        consulta = cnx.cursor()  # Abre a consulta
+
+        if escolha == 'Cadastrar':  # Não pedirá esses dados caso for alterar os dados da reserva
+            statusReserva = 'Reservado'
+            nome = validaNome()
+            cpf = validaCpf()           
+            nrPessoas = validaNrPessoas()
+            tipoQuarto = validaTipoQuarto()
+            diarias = validaDiarias()
+            valorReserva = validaValorReserva(nrPessoas, tipoQuarto, diarias)
+
+            request = 'INSERT INTO Reservas (status_reserva, nm_titular, cpf_titular, nr_pessoas, tp_quarto, diarias, valor_reserva) VALUES (%s, %s, %s, %s, %s, %s, %s);'  # Comando
+            valores = (statusReserva, nome, cpf, nrPessoas, tipoQuarto, diarias, valorReserva)
+            consulta.execute(request, valores)
+            cnx.commit()
+            print('Reserva cadastrada')
+
+
+        elif escolha == 'Alterar':
+            cpf = validaCpf()
+            idDisponiveis = consultaCPF(cpf, 'Reservado')
+            if idDisponiveis == None:
+                pass  # Mensagem de erro é dada pela função
+            else:
+                listaIds = idDisponiveis
+                print('Digite o ID da reserva a ser alterada')
+                id = validaInts()
+                if id not in listaIds:
+                    print('Número de reserva inválido')
+                else:
+                    nrPessoas = validaNrPessoas()
+                    tipoQuarto = validaTipoQuarto()
+                    diarias = validaDiarias()
+                    valorReserva = validaValorReserva(nrPessoas, tipoQuarto, diarias)
+
+                    request = f"UPDATE Reservas SET nr_pessoas = {nrPessoas}, tp_quarto = '{tipoQuarto}', diarias = {diarias}, valor_reserva = {valorReserva} WHERE id_reserva = {id};"
+                    consulta.execute(request)
+                    cnx.commit()
+                    print('Dados atualizados')
+        
+        consulta.close()
+        cnx.close()
+
+    else:
+        cnx  # Força reconexão com o banco de dados
+
+
 def entradaSaida(antigoStatus, novoStatus, cpfTitular):
     if checarConexao == True:
         consulta = cnx.cursor()  # Abre a consulta
@@ -125,7 +174,7 @@ while True:
     resposta = input('> ')
 
     if resposta == '1':
-        pass
+        inserirAlterar('Cadastrar')
 
     elif resposta == '2':
         cpf = validaCpf()
@@ -136,7 +185,7 @@ while True:
         entradaSaida('Ativo', 'Finalizado', cpf)
 
     elif resposta == '4':
-        pass
+        inserirAlterar('Alterar')
       
     elif resposta == '5':
         print(
